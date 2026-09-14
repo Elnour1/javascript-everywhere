@@ -1,0 +1,10 @@
+h1{
+    text-align: center;
+     color: red;
+}
+.button-container {
+    text-align: center;
+}
+.button-container button {
+    margin: 30px;
+}
