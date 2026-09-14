@@ -1,2 +1,2 @@
-console.log("Name: Nour Elsayed");
-console.log("Node version:", process.version);
+const userName = process.argv[2] || "Guest";
+console.log(`Hello, ${userName}!`);

@@ -1,0 +1,21 @@
+{
+  "name": "day-1",
+  "version": "1.0.0",
+  "description": "**Author:** Nour Elsayed  \r **Repository Overview:** A comprehensive learning journey covering modern JavaScript from core fundamentals to advanced full-stack and specialized domains. Each directory represents a dedicated session containing practical tasks, notes, and implementations.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://Elnour1@github.com/Elnour1/javascript-everywhere.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/Elnour1/javascript-everywhere/issues"
+  },
+  "homepage": "https://github.com/Elnour1/javascript-everywhere#readme"
+}

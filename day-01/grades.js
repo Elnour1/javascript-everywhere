@@ -1,25 +1,17 @@
-const students = [
-  { name: "Sara", score: 92 },
-  { name: "Omar", score: 68 },
-  { name: "Lina", score: 79 },
-  { name: "Ahmed", score: 71 },
-  { name: "Alia", score: 82 }
-];
+const classA = [85, 92, 78, 90, 88];
+classA.forEach((grade) => {
+  console.log(`Grade: ${grade}`);
+});
 
-let excellentCount = 0;
-let goodCount = 0;
-let needsWorkCount = 0;
+const classB = [82, 98, 74, 91];
+const allGrades = [...classA, ...classB];
 
-for (const student of students) {
-  if (student.score >= 90) {
-    console.log(`${student.name}: ${student.score} → Excellent`);
-    excellentCount++;
-  } else if (student.score >= 70) {
-    console.log(`${student.name}: ${student.score} → Good`);
-    goodCount++;
-  } else {
-    console.log(`${student.name}: ${student.score} → Needs work`);
-    needsWorkCount++;
+let highestScore = allGrades[0];
+
+for (let i = 1; i < allGrades.length; i++) {
+  if (allGrades[i] > highestScore) {
+    highestScore = allGrades[i];
   }
 }
-console.log(`Summary: ${excellentCount} Excellent, ${goodCount} Good, ${needsWorkCount} Needs work.`);
+
+console.log("Highest score across both classes:", highestScore);

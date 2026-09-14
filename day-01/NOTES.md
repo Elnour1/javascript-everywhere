@@ -55,3 +55,18 @@
 
 4. **When to use `while` instead of `for`:**
    Use `while` when the number of iterations is indeterminate and execution depends on an external dynamic condition being met. Use `for` when iterating a predictable number of times or looping through a known collection/array.
+   ## Why node_modules is not pushed to GitHub
+- The `node_modules` directory contains thousands of installed third-party packages, making its size huge.
+- Pushing it bloats the repository history and wastes bandwidth.
+- Anyone can recreate the exact folder simply by cloning the project and running `npm install`, since all dependencies and versions are tracked inside `package.json`.
+## package.json Fields
+- **name**: The lowercase, URL-friendly identifier of the project.
+- **version**: The current release version following semantic versioning (major.minor.patch).
+- **description**: A short summary explaining what the project does (pulled automatically from README).
+- **main**: The entry-point script loaded when requiring the package (e.g., `index.js`).
+- **scripts**: Custom CLI commands and shortcuts (such as `npm test`).
+- **repository**: The source control location (GitHub URL).
+- **keywords**: Search tags used to index the project on npm.
+- **author**: The name/contact info of the package creator.
+- **license**: The legal terms under which the code is shared (e.g., ISC, MIT).
+- **bugs & homepage**: Issue tracker and main repository links.
