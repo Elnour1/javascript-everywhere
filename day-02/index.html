@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Score Checker</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 500px;
+      margin: 40px auto;
+      padding: 20px;
+    }
+    .input-group {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 15px;
+    }
+    input {
+      flex: 1;
+      padding: 8px;
+      font-size: 16px;
+    }
+    button {
+      padding: 8px 16px;
+      font-size: 15px;
+      cursor: pointer;
+    }
+    #error-msg {
+      color: #c92a2a;
+      font-weight: bold;
+      min-height: 24px;
+    }
+    #current-grade {
+      margin: 15px 0;
+      font-size: 18px;
+    }
+    ul {
+      list-style-type: square;
+      padding-left: 20px;
+    }
+    li {
+      margin-bottom: 6px;
+    }
+  </style>
+</head>
+<body>
+  <h2>Score Checker</h2>
+
+  <div class="input-group">
+    <input type="text" id="score-input" placeholder="Enter score (0-100)" />
+    <button id="check-btn">Check</button>
+    <button id="clear-btn">Clear</button>
+  </div>
+
+  <div id="error-msg"></div>
+  <div id="current-grade"></div>
+
+  <h3>Checked Scores History:</h3>
+  <ul id="score-list"></ul>
+
+  <script src="app.js"></script>
+</body>
+</html>

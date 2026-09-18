@@ -1,0 +1,1 @@
+New-Item -Path "NOTES.md" -ItemType File -Value "# Day 02 Notes`n`n- Learned about types and explicit coercion.`n- Practiced conditionals and loops.`n- Built report card in Node.js and DOM.`n"
