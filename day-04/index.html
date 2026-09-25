@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Student Dashboard — Day 04</title>
+  <style>
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      max-width: 650px;
+      margin: 40px auto;
+      padding: 0 20px;
+      line-height: 1.5;
+      color: #1e293b;
+    }
+    .form-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    input {
+      padding: 8px 12px;
+      border: 1px solid #cbd5e1;
+      border-radius: 6px;
+      flex: 1;
+      min-width: 120px;
+      font-size: 14px;
+    }
+    button {
+      padding: 8px 16px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s;
+    }
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+    .btn-add { background: #2563eb; color: white; }
+    .btn-clear { background: #e2e8f0; color: #334155; }
+    .btn-load { background: #059669; color: white; }
+    .btn-freeze { background: #dc2626; color: white; }
+    .btn-chunk { background: #d97706; color: white; }
+
+    .status-box {
+      font-size: 13px;
+      min-height: 22px;
+      margin-bottom: 12px;
+      font-weight: 500;
+    }
+    .status-error { color: #dc2626; }
+    .status-info { color: #2563eb; }
+
+    ul { list-style: none; padding: 0; margin-top: 16px; }
+    li {
+      padding: 10px 14px;
+      border-bottom: 1px solid #e2e8f0;
+      font-family: ui-monospace, monospace;
+      font-size: 14px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .summary-card {
+      margin-top: 24px;
+      padding: 14px;
+      background: #f8fafc;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      font-weight: 600;
+    }
+  </style>
+</head>
+<body>
+  <h2>Student Dashboard (Day 04)</h2>
+
+  <div class="form-row">
+    <input type="text" id="nameInput" placeholder="Name *" />
+    <input type="number" id="scoreInput" placeholder="Score (0-100) *" />
+    <input type="text" id="cityInput" placeholder="City (Optional)" />
+    <button id="addBtn" class="btn-add">Add</button>
+    <button id="clearBtn" class="btn-clear">Clear</button>
+  </div>
+
+  <div class="form-row">
+    <button id="loadBtn" class="btn-load">Load from server</button>
+    <button id="freezeBtn" class="btn-freeze">Freeze UI (3s)</button>
+    <button id="chunkBtn" class="btn-chunk">Chunked Work</button>
+  </div>
+
+  <div id="statusBox" class="status-box"></div>
+
+  <ul id="studentList"></ul>
+
+  <div class="summary-card" id="summaryBox">
+    Total Students: 0 | Class Average: 0.0
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
