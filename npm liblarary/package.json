@@ -17,5 +17,8 @@
   "bugs": {
     "url": "https://github.com/Elnour1/javascript-everywhere/issues"
   },
-  "homepage": "https://github.com/Elnour1/javascript-everywhere#readme"
+  "homepage": "https://github.com/Elnour1/javascript-everywhere#readme",
+  "dependencies": {
+    "loadsh": "^0.0.4"
+  }
 }
