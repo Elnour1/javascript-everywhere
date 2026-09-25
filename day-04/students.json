@@ -1,0 +1,12 @@
+[
+  { "id": 1, "name": "Sara Ahmad", "score": 94, "attendance": 96, "address": { "city": "Cairo" } },
+  { "id": 2, "name": "Omar Tarek", "score": 58, "attendance": 65, "address": { "city": "Giza" } },
+  { "id": 3, "name": "Laila Sherif", "score": 88, "attendance": 90, "address": { "city": "Alexandria" } },
+  { "id": 4, "name": "Karim Safwat", "score": 76, "attendance": 84 },
+  { "id": 5, "name": "Broken Score", "score": "invalid_num", "attendance": 70 },
+  { "id": 6, "name": "Ziad Yasser", "score": 82, "attendance": 88, "address": { "city": "Mansoura" } },
+  { "id": 7, "name": "Missing Att", "score": 91 },
+  { "id": 8, "name": "Nouran Ezz", "score": 67, "attendance": 72, "address": { "city": "Cairo" } },
+  { "id": 9, "name": "Hassan Adel", "score": 45, "attendance": 55, "address": { "city": "Tanta" } },
+  { "id": 10, "name": "Dina Mostafa", "score": 98, "attendance": 99, "address": { "city": "Giza" } }
+]
