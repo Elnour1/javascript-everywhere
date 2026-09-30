@@ -1,0 +1,8 @@
+[
+  { "id": 1, "name": "Tariq", "score": 92 },
+  { "id": 2, "name": "Sarah", "score": 88 },
+  { "id": 3, "name": "Omar", "score": 74 },
+  { "id": 4, "name": "Laila", "score": 58 },
+  { "id": 5, "name": "FlakyStudent", "score": 81 },
+  { "id": 6, "name": "BrokenRecord" }
+]

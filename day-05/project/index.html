@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Grade Report - Browser ESM</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 2rem; background: #f9fafb; color: #111827; }
+    h1 { margin-bottom: 0.5rem; }
+    .controls { display: flex; gap: 1rem; align-items: center; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    button { padding: 0.6rem 1.2rem; cursor: pointer; border: 1px solid #d1d5db; background: #fff; border-radius: 6px; font-weight: 500; }
+    button:disabled { opacity: 0.5; cursor: not-allowed; }
+    button.primary { background: #2563eb; color: #fff; border-color: #1d4ed8; }
+    table { width: 100%; max-width: 700px; border-collapse: collapse; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; margin-top: 1rem; }
+    th, td { padding: 0.75rem 1rem; text-align: left; border-bottom: 1px solid #e5e7eb; }
+    th { background: #f3f4f6; font-size: 0.875rem; text-transform: uppercase; color: #4b5563; }
+    .status-box { margin-top: 1rem; font-weight: 500; }
+    .status-box.error { color: #dc2626; }
+    .status-box.info { color: #2563eb; }
+    form { margin-top: 2rem; padding: 1rem; background: #fff; border: 1px solid #e5e7eb; border-radius: 8px; max-width: 500px; }
+    .form-group { margin-bottom: 0.75rem; display: flex; gap: 0.5rem; }
+    .form-group input { padding: 0.5rem; border: 1px solid #d1d5db; border-radius: 4px; flex: 1; }
+  </style>
+</head>
+<body>
+  <h1>Student Grade Report</h1>
+  <p>Universal ES Modules running natively in the browser.</p>
+
+  <div class="controls">
+    <button id="load-btn" class="primary">Load students</button>
+    <button id="time-btn">Time both (Seq vs Par)</button>
+    <label>
+      <input type="checkbox" id="simulate-slow"> Simulate slow network (Trip timeout)
+    </label>
+  </div>
+
+  <div id="status" class="status-box"></div>
+  <div id="summary" class="status-box info"></div>
+
+  <table id="students-table" style="display: none;">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Name</th>
+        <th>Score</th>
+        <th>Grade</th>
+        <th>Status</th>
+        <th>Attendance</th>
+      </tr>
+    </thead>
+    <tbody id="table-body"></tbody>
+  </table>
+
+  <form id="add-form">
+    <h3>Add Student</h3>
+    <div class="form-group">
+      <input type="text" id="student-name" placeholder="Student Name" required>
+      <input type="number" id="student-score" placeholder="Score (0-100)" min="0" max="100" required>
+      <button type="submit">Add</button>
+    </div>
+  </form>
+
+  <!-- Loaded as ESM Module - handlers wired with addEventListener -->
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

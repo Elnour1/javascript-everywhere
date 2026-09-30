@@ -22,3 +22,8 @@
 | Session | Topic | Key Files | Status |
 | :--- | :--- | :--- | :--- |
 | **Day 01** | JavaScript Fundamentals, Browser vs Node, Variables & Loops | `NOTES.md`, `profile.js`, `preview.js`, `grades.js`, `index.html`, `app.js` | Completed |
+
+| Day | Topic | Status |
+| --- | --- | --- |
+| ... | ... | ... |
+| Day 05 | Asynchronous JS (Promises, Async/Await), Modules (CJS/ESM), and Git Workflow | Completed |

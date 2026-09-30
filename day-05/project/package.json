@@ -1,0 +1,8 @@
+{
+  "name": "async-grade-report",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "report": "node report.js"
+  }
+}
