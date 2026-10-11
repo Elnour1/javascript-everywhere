@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Layout Lab — CSS Grid & Form Showcase</title>
+  <style>
+    :root {
+      --color-text: #1a202c;
+      --color-bg: #f7fafc;
+      --color-card: #ffffff;
+      --color-primary: #3182ce;
+      --color-border: #e2e8f0;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, sans-serif;
+      line-height: 1.6;
+      color: var(--color-text);
+      background-color: var(--color-bg);
+      margin: 0;
+      padding: 0;
+    }
+
+    header, main, footer {
+      max-width: 1080px;
+      margin: 0 auto;
+      padding: 1.5rem;
+    }
+
+    nav ul {
+      display: flex;
+      gap: 1rem;
+      list-style: none;
+      padding: 0;
+    }
+
+    nav a {
+      color: var(--color-primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    nav a:focus, button:focus, input:focus, textarea:focus {
+      outline: 3px solid #2b6cb0;
+      outline-offset: 2px;
+    }
+
+    /* Requirement: Card Grid with repeat(auto-fill, minmax(..., 1fr)) */
+    .card-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 1.5rem;
+      margin: 2rem 0;
+    }
+
+    .card {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 1.25rem;
+      box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    }
+
+    .contact-form {
+      background: var(--color-card);
+      border: 1px solid var(--color-border);
+      border-radius: 8px;
+      padding: 1.5rem;
+      max-width: 600px;
+      margin: 2rem 0;
+    }
+
+    .form-group {
+      margin-bottom: 1rem;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 0.25rem;
+      font-weight: 600;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 0.5rem;
+      border: 1px solid var(--color-border);
+      border-radius: 4px;
+      box-sizing: border-box;
+    }
+
+    button[type="submit"] {
+      background: var(--color-primary);
+      color: white;
+      border: none;
+      padding: 0.75rem 1.5rem;
+      border-radius: 4px;
+      font-size: 1rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Layout Lab Showcase</h1>
+    <nav aria-label="Main Navigation">
+      <ul>
+        <li><a href="index.html">Back to Task Dashboard</a></li>
+        <li><a href="#contact-section">Contact Us</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <article>
+      <h2>Component Overview</h2>
+      <p>This page runs pure HTML and CSS without any JavaScript dependencies.</p>
+
+      <!-- 6+ Card Grid Section -->
+      <section aria-labelledby="grid-heading">
+        <h3 id="grid-heading">Responsive Grid System</h3>
+        <div class="card-grid">
+          <div class="card">
+            <h4>Feature Alpha</h4>
+            <p>Designed with auto-fill CSS grid for flexible wrapping.</p>
+          </div>
+          <div class="card">
+            <h4>Feature Beta</h4>
+            <p>Cards distribute evenly and adjust down to 240px width.</p>
+          </div>
+          <div class="card">
+            <h4>Feature Gamma</h4>
+            <p>High contrast text ensuring optimal visual accessibility.</p>
+          </div>
+          <div class="card">
+            <h4>Feature Delta</h4>
+            <p>Scales across viewport widths without media queries.</p>
+          </div>
+          <div class="card">
+            <h4>Feature Epsilon</h4>
+            <p>Semantic markup ready for keyboard and screen reader users.</p>
+          </div>
+          <div class="card">
+            <h4>Feature Zeta</h4>
+            <p>Clean structure following modern web layout standards.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- Contact Form Section -->
+      <section id="contact-section" aria-labelledby="contact-heading">
+        <h3 id="contact-heading">Inquiry & Feedback</h3>
+        <form class="contact-form" action="#" method="post">
+          <!-- Field 1: text -->
+          <div class="form-group">
+            <label for="contact-name">Full Name</label>
+            <input type="text" id="contact-name" name="name" required autocomplete="name">
+          </div>
+
+          <!-- Field 2: email -->
+          <div class="form-group">
+            <label for="contact-email">Email Address</label>
+            <input type="email" id="contact-email" name="email" required autocomplete="email">
+          </div>
+
+          <!-- Field 3: textarea -->
+          <div class="form-group">
+            <label for="contact-message">Your Message</label>
+            <textarea id="contact-message" name="message" rows="4" required></textarea>
+          </div>
+
+          <button type="submit">Send Message</button>
+        </form>
+      </section>
+    </article>
+  </main>
+
+  <footer>
+    <p>&copy; 2026 Layout Lab Showcase. Designed with zero JavaScript.</p>
+  </footer>
+</body>
+</html>

@@ -1,0 +1,8 @@
+[
+  { "id": 1, "name": "Sara Ahmed", "score": 94, "email": "sara@example.com" },
+  { "id": 2, "name": "Omar Hassan", "score": 82 },
+  { "id": 3, "name": "Ali Mahmoud", "score": 58, "email": "ali@example.com" },
+  { "id": "invalid-4", "name": "Bad Record 1", "score": 75 },
+  { "id": 5, "name": "Mona Qena", "score": 150 },
+  { "id": 6, "name": "Nour Sayed", "score": 98, "email": "nour@example.com" }
+]

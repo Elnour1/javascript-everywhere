@@ -1,0 +1,14 @@
+{
+  "name": "task-manager",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "api": "tsx watch src/server/server.ts",
+    "check": "tsc --noEmit"
+  },
+  "devDependencies": {
+    "@types/node": "^22.20.5",
+    "tsx": "^4.7.0",
+    "typescript": "^5.4.0"
+  }
+}

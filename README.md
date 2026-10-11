@@ -27,3 +27,4 @@
 | --- | --- | --- |
 | ... | ... | ... |
 | Day 05 | Asynchronous JS (Promises, Async/Await), Modules (CJS/ESM), and Git Workflow | Completed |
+| Day 06 | TypeScript, HTTP & Fetch, Resilient Web Architecture | Completed |

@@ -1,0 +1,5 @@
+@'
+data/
+dist/
+node_modules/
+'@ | Set-Content task-manager\.gitignore
