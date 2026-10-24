@@ -1,17 +1,24 @@
 import React from 'react';
 import TaskStats from './components/TaskStats';
-import TaskList from './components/TaskList.tsx';
+import TaskList from './components/TaskList';
 import Footer from './components/Footer';
+import Sidebar from './components/Sidebar';
 import './App.css';
 
 const App: React.FC = () => {
   return (
     <div className="app-container">
-      <main className="main-content">
-        <h1>TaskFlow</h1>
-        <TaskStats />
-        <TaskList />
-      </main>
+      <div className="app-layout">
+        <Sidebar />
+        <main className="main-content">
+          <header className="main-header">
+            <h1>TaskFlow</h1>
+            <TaskStats />
+          </header>
+          <TaskList />
+        </main>
+      </div>
+
       <Footer />
     </div>
   );

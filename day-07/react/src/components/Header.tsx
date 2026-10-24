@@ -1,18 +1,15 @@
-import {  APP_TAGLINE, getAppName } from "../constants";
+export default function Header() {
+  const userName: string = 'Nour';
+  const userInitial: string = userName.charAt(0).toUpperCase();
 
-interface HeaderProps {
-  userName: string;
-}
-
-function Header({ userName }: HeaderProps) {
   return (
-    <>
-      <header className="app-header">
-        <div className="logo">{getAppName()}</div>
-        <p className="tagline">hi, {userName}!  {APP_TAGLINE}</p>
-      </header>
-    </>
+    <header className="main-header">
+      <div className="header-title">
+        <h1>TaskFlow</h1>
+      </div>
+      <div className="user-avatar" title={userName}>
+        {userInitial}
+      </div>
+    </header>
   );
 }
-
-export default Header;
