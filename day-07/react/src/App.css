@@ -15,3 +15,12 @@
   font-size: 0.875rem;
   width: 100%;
 }
+.task-stats {
+  font-size: 0.95rem;
+  font-weight: 500;
+  color: #495057;
+  margin-top: 1rem;
+  margin-bottom: 1.25rem;
+  padding: 0 0.25rem;
+  letter-spacing: 0.01em;
+}
