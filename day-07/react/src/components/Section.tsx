@@ -1,18 +1,23 @@
-import type { ReactNode } from "react"
+import type { ReactNode } from "react";
 
-interface SectionProps {
-  title: string
-  children: ReactNode
+export interface SectionProps {
+  title: string;
+  children: ReactNode;
+  action?: ReactNode; // الخاصية الاختيارية الجديدة
 }
-function Section({ title, children }: SectionProps)
-{
-    return (
-        <section className="section">
-            <h2 className="section-title">{title}</h2>
-            <div className="section-body">
-                {children}
-            </div>
-        </section>
-    )
+
+export function Section({ title, children, action }: SectionProps) {
+  return (
+    <section className="section">
+      <div className="section-header">
+        <h2 className="section-title">{title}</h2>
+        {action && <div className="section-action">{action}</div>}
+      </div>
+      <div className="section-content">
+        {children}
+      </div>
+    </section>
+  );
 }
-export default Section
+
+export default Section;

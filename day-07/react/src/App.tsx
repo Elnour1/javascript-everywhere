@@ -9,7 +9,15 @@ const App: React.FC = () => {
   return (
     <div className="app-container">
       <div className="app-layout">
-        <Sidebar title="Projects" projects={[]} />
+        <Sidebar
+            title="Projects"
+            projects={[
+              'Website Redesign',
+              'Mobile App',
+              'Marketing',
+              'Design System'
+            ]}
+          />
         <main className="main-content">
           <header className="main-header">
             <h1>TaskFlow</h1>
