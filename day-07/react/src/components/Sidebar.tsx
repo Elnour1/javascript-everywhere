@@ -1,16 +1,21 @@
-function Sidebar() {
+export interface SidebarProps {
+  title: string;
+  projects: string[];
+}
+
+export function Sidebar({ title, projects }: SidebarProps) {
   return (
     <aside className="sidebar">
-      <nav>
-        <h2 className="sidebar-title">Projects</h2>
-        <ul className="project-list">
-          <li className="project-item active">Website Redesign</li>
-          <li className="project-item">Mobile App</li>
-          <li className="project-item">Marketing</li>
-          <li className="project-item">Design System</li>
-        </ul>
-      </nav>
+      <h2 className="sidebar-title">{title}</h2>
+      <ul className="sidebar-projects">
+        {projects.map((project, index) => (
+          <li key={`${project}-${index}`} className="sidebar-project-item">
+            {project}
+          </li>
+        ))}
+      </ul>
     </aside>
   );
 }
+
 export default Sidebar;

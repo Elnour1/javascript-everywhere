@@ -29,10 +29,31 @@ body {
   }
 }
 .sidebar {
-  width: 100%;
-  background-color: #ffffff;
-  border-bottom: 1px solid #e9ecef;
-  padding: 1.5rem;
+  width: 240px;
+  padding: 1rem;
+  border-right: 1px solid #e2e8f0;
+}
+
+.sidebar-title {
+  font-size: 1.1rem;
+  margin-bottom: 0.75rem;
+  color: #1e293b;
+}
+
+.sidebar-projects {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-project-item {
+  padding: 0.4rem 0.6rem;
+  border-radius: 4px;
+  color: #475569;
+}
+
+.sidebar-project-item:hover {
+  background-color: #f1f5f9;
 }
 
 @media (min-width: 768px) {
@@ -43,13 +64,6 @@ body {
     border-right: 1px solid #e9ecef;
     min-height: calc(100vh - 60px);
   }
-}
-
-.sidebar-title {
-  font-size: 1.1rem;
-  font-weight: 700;
-  margin-bottom: 1rem;
-  color: #1a1a1a;
 }
 
 .project-list {
