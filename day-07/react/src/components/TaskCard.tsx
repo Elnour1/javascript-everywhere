@@ -6,6 +6,7 @@ interface TaskCardProps {
   task: Task;
   variant?: "default" | "urgent";
   onSelect: (id: number) => void;
+  onDelete: (id: number) => void; // إضافة الخاصية الجديدة
 }
 
 function getStatusLabel(status: string): string {
@@ -14,10 +15,20 @@ function getStatusLabel(status: string): string {
   return "Done";
 }
 
-export function TaskCard({ task, variant = "default", onSelect }: TaskCardProps) {
+export function TaskCard({
+  task,
+  variant = "default",
+  onSelect,
+  onDelete,
+}: TaskCardProps) {
   function handleDetailsClick(event: MouseEvent<HTMLButtonElement>) {
-    console.log(`button clicked`, event.currentTarget.textContent);
+    console.log("button clicked", event.currentTarget.textContent);
     onSelect(task.id);
+  }
+
+  function handleDelete(event: MouseEvent<HTMLButtonElement>) {
+    event.stopPropagation(); // يمنع تداخل النقر مع كارت المهمة
+    onDelete(task.id);
   }
 
   const priority = task.priority ?? "medium";
@@ -32,16 +43,23 @@ export function TaskCard({ task, variant = "default", onSelect }: TaskCardProps)
 
   return (
     <article className={`task-card task-card-${variant}`}>
-      <h3 className="task-title">{task.title}</h3>
-      <Badge tone={badgeTone}>{priority}</Badge>
+      <div className="task-header">
+        <h3 className="task-title">{task.title}</h3>
+        <Badge tone={badgeTone}>{priority}</Badge>
+      </div>
       <p className="task-description">{task.description}</p>
       <p className="task-date">{task.dueDate ?? "No Due Date"}</p>
       <span className={`task-status status-${task.status}`}>
         {getStatusLabel(task.status)}
       </span>
-      <button className="task-button" onClick={handleDetailsClick}>
-        Details
-      </button>
+      <div className="task-actions">
+        <button className="task-button" onClick={handleDetailsClick}>
+          Details
+        </button>
+        <button className="task-button task-button--danger" onClick={handleDelete}>
+          Delete
+        </button>
+      </div>
     </article>
   );
 }
