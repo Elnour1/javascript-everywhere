@@ -9,9 +9,7 @@ export interface Task {
   priority?: Priority;      
   dueDate?: string;
 }
-import type { TaskStatus } from "../types/task";
 
-// دالة تحديد الحالة التالية
 export function nextStatus(status: TaskStatus): TaskStatus {
   switch (status) {
     case "todo":
@@ -23,7 +21,6 @@ export function nextStatus(status: TaskStatus): TaskStatus {
   }
 }
 
-// دالة مساعدة لتحديد النص المكتوب على الزر بناءً على الخطوة القادمة
 export function getNextStatusActionLabel(status: TaskStatus): string {
   switch (status) {
     case "todo":
@@ -34,3 +31,4 @@ export function getNextStatusActionLabel(status: TaskStatus): string {
       return "Restart"; // أو "Move to To Do"
   }
 }
+export type SortOption = "default" | "title" | "dueDate";
