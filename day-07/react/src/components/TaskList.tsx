@@ -1,14 +1,18 @@
 import { useState } from "react";
 import { tasks as initialTasks } from "../data/tasks";
 import type { Task } from "../types/task";
-import TaskCard, { nextStatus } from "../TaskCard";
+import TaskCard from "../components/TaskCard";
 import Section from "./Section";
 import { Badge } from "./Badge";
 
+type SortMode = "default" | "title";
+
 function TaskList() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
-
   const [lastDeletedTask, setLastDeletedTask] = useState<Task | null>(null);
+  
+  // الـ State الإضافية الوحيدة المطلوبة لميزة الترتيب
+  const [sortMode, setSortMode] = useState<SortMode>("default");
 
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) => task.status === "done").length;
@@ -28,7 +32,6 @@ function TaskList() {
 
   function handleUndo() {
     if (lastDeletedTask) {
-
       setTasks((prevTasks) => [...prevTasks, lastDeletedTask]);
       setLastDeletedTask(null);
     }
@@ -40,7 +43,7 @@ function TaskList() {
         if (task.id === taskId) {
           return {
             ...task,
-            status: nextStatus(task.status),
+            status: (task.status),
           };
         }
         return task;
@@ -48,10 +51,39 @@ function TaskList() {
     );
   }
 
+  // تبديل نمط الترتيب
+  function handleToggleSort() {
+    setSortMode((prev) => (prev === "default" ? "title" : "default"));
+  }
+
+  // فرز نسخة جديدة من المصفوفة دون عمل mutation للأصلية
+  const displayedTasks =
+    sortMode === "title"
+      ? [...tasks].sort((a, b) => a.title.localeCompare(b.title))
+      : tasks;
+
   return (
     <Section
       title="My Tasks"
-      action={<Badge tone="neutral">{totalTasks}</Badge>}
+      action={
+        <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <button
+            type="button"
+            onClick={handleToggleSort}
+            style={{
+              padding: "0.25rem 0.75rem",
+              fontSize: "0.85rem",
+              borderRadius: "4px",
+              border: "1px solid #d1d5db",
+              backgroundColor: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            Sort: {sortMode}
+          </button>
+          <Badge tone="neutral">{totalTasks}</Badge>
+        </div>
+      }
     >
       <p className="task-progress" style={{ margin: "0 0 1rem 0", color: "#666" }}>
         {totalTasks === 0
@@ -94,7 +126,7 @@ function TaskList() {
       )}
 
       <div className="task-list">
-        {tasks.map((task, index) => (
+        {displayedTasks.map((task, index) => (
           <TaskCard
             key={task.id}
             task={task}
