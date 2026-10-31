@@ -10,15 +10,17 @@ type SortMode = "default" | "title";
 function TaskList() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [lastDeletedTask, setLastDeletedTask] = useState<Task | null>(null);
-  
-  // الـ State الإضافية الوحيدة المطلوبة لميزة الترتيب
   const [sortMode, setSortMode] = useState<SortMode>("default");
+  
+  // State لحفظ الـ id الخاص بالمهمة المحددة حالياً
+  const [selectedTaskId, setSelectedTaskId] = useState<number | null>(null);
 
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) => task.status === "done").length;
   const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
   function handleSelectTask(id: number) {
+    setSelectedTaskId(id);
     console.log(`Task selected with id: ${id}`);
   }
 
@@ -27,6 +29,9 @@ function TaskList() {
     if (taskToDelete) {
       setLastDeletedTask(taskToDelete);
       setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
+      if (selectedTaskId === id) {
+        setSelectedTaskId(null);
+      }
     }
   }
 
@@ -43,7 +48,7 @@ function TaskList() {
         if (task.id === taskId) {
           return {
             ...task,
-            status: (task.status),
+            status:(task.status),
           };
         }
         return task;
@@ -51,22 +56,48 @@ function TaskList() {
     );
   }
 
-  // تبديل نمط الترتيب
   function handleToggleSort() {
     setSortMode((prev) => (prev === "default" ? "title" : "default"));
   }
 
-  // فرز نسخة جديدة من المصفوفة دون عمل mutation للأصلية
   const displayedTasks =
     sortMode === "title"
       ? [...tasks].sort((a, b) => a.title.localeCompare(b.title))
       : tasks;
+
+  // دالة التحدي: اختيار المهمة التالية مع الالتفاف التلقائي
+  function handleSelectNext() {
+    if (displayedTasks.length === 0) return;
+
+    const currentIndex = displayedTasks.findIndex((t) => t.id === selectedTaskId);
+
+    // إذا لم تكن أي مهمة محددة أو كنا في النهاية، نلتف للأول (index 0)
+    if (currentIndex === -1 || currentIndex === displayedTasks.length - 1) {
+      setSelectedTaskId(displayedTasks[0].id);
+    } else {
+      setSelectedTaskId(displayedTasks[currentIndex + 1].id);
+    }
+  }
 
   return (
     <Section
       title="My Tasks"
       action={
         <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+          <button
+            type="button"
+            onClick={handleSelectNext}
+            style={{
+              padding: "0.25rem 0.75rem",
+              fontSize: "0.85rem",
+              borderRadius: "4px",
+              border: "1px solid #d1d5db",
+              backgroundColor: "#fff",
+              cursor: "pointer",
+            }}
+          >
+            Select next
+          </button>
           <button
             type="button"
             onClick={handleToggleSort}
@@ -127,14 +158,21 @@ function TaskList() {
 
       <div className="task-list">
         {displayedTasks.map((task, index) => (
-          <TaskCard
+          <div
             key={task.id}
-            task={task}
-            variant={index === 0 ? "urgent" : "default"}
-            onSelect={handleSelectTask}
-            onDelete={handleDeleteTask}
-            onToggleStatus={handleToggleStatus}
-          />
+            style={{
+              outline: selectedTaskId === task.id ? "2px solid #2563eb" : "none",
+              borderRadius: "8px",
+            }}
+          >
+            <TaskCard
+              task={task}
+              variant={index === 0 ? "urgent" : "default"}
+              onSelect={handleSelectTask}
+              onDelete={handleDeleteTask}
+              onToggleStatus={handleToggleStatus}
+            />
+          </div>
         ))}
       </div>
     </Section>

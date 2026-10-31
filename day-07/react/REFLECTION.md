@@ -18,3 +18,14 @@ Passing the whole `task` object as a single prop preserves the structural cohesi
 
 ### 3. What does `??` do differently from `||`?
 The nullish coalescing operator (`??`) falls back only when the left-hand operand is strictly `null` or `undefined`. In contrast, the logical OR operator (`||`) checks for any falsy value, meaning it will incorrectly trigger the fallback for valid inputs like empty strings (`""`), `0`, or `false`.
+# Track 2 Reflection
+
+### 1. Why does `tasks.push(task)` followed by `setTasks(tasks)` not update the screen?
+React compares state by reference using `Object.is` to check if a re-render is necessary. Using `tasks.push(task)` mutates the existing array in place without changing its memory reference, so `setTasks(tasks)` receives the exact same array pointer. Because React sees no reference change, it considers the state unchanged and skips the re-render.
+
+### 2. Why is the index a bad key for this list?
+Using array indices as keys creates issues when the list changes via sorting, filtering, or deleting tasks. Since indices shift when items are removed or reordered, React confuses which component matches which data, causing incorrect UI updates, broken local states, or animation bugs. A permanent and unique ID ensures React always tracks the exact task correctly.
+
+### 3. Which values in your TaskList are state, and which are derived?
+- **State:** `tasks` (the source list of items), `lastDeletedTask` (stores the single deleted task for undo), and `sortMode` (tracks "default" vs "title").
+- **Derived (Computed):** `totalTasks` (`tasks.length`), `completedTasks` (`tasks.filter(...).length`), `percentage` (calculated completion rate), and `displayedTasks` (the newly sorted array copy). None of these need their own state because they are calculated dynamically during render from `tasks` and `sortMode`.
