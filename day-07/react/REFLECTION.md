@@ -29,3 +29,13 @@ Using array indices as keys creates issues when the list changes via sorting, fi
 ### 3. Which values in your TaskList are state, and which are derived?
 - **State:** `tasks` (the source list of items), `lastDeletedTask` (stores the single deleted task for undo), and `sortMode` (tracks "default" vs "title").
 - **Derived (Computed):** `totalTasks` (`tasks.length`), `completedTasks` (`tasks.filter(...).length`), `percentage` (calculated completion rate), and `displayedTasks` (the newly sorted array copy). None of these need their own state because they are calculated dynamically during render from `tasks` and `sortMode`.
+# Track 2 Reflection — Part 2
+
+### 1. Why does `useState(initialValues)` not update when `initialValues` changes?
+React runs the initial value passed to `useState` only once during the component's initial mount. On subsequent re-renders, React preserves the existing state in memory and ignores the updated prop or argument. To sync state with changing props, you would need an explicit effect or use the prop directly as a key to reset the component instance.
+
+### 2. When is `as StatusFilter` safe, and when is it risky?
+Type assertion (`as StatusFilter`) is safe when the input source is strictly controlled and known to contain only valid values, such as the hardcoded `<option>` values inside an application `<select>` element. It becomes risky when used on untrusted, external, or runtime data (like API payloads, query strings, or unvalidated text inputs) because TypeScript skips type checking, allowing unexpected runtime strings to bypass type safety.
+
+### 3. Why do we turn an empty date into `undefined`?
+In HTML, an empty date input returns an empty string (`""`), which is truthy in JavaScript and creates ambiguity with optional TypeScript properties typed as `string | undefined`. Converting `""` to `undefined` represents the true absence of a value, prevents invalid date strings from entering business logic or APIs, and makes sorting easier by treating missing dates consistently.

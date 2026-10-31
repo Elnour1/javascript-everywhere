@@ -1,24 +1,52 @@
 import { useState, type ChangeEvent, type FormEvent } from "react";
-import type { Task, Priority as TaskPriority } from "../types/task";
+import type { Task, Priority } from "../types/task";
 
 interface TaskFormProps {
   onAddTask: (task: Omit<Task, "id">) => void;
+  onCancel?: () => void;
 }
 
-export function TaskForm({ onAddTask }: TaskFormProps) {
+export function TaskForm({ onAddTask, onCancel }: TaskFormProps) {
   const [title, setTitle] = useState("");
   const [description, setDescription] = useState("");
   const [dueDate, setDueDate] = useState("");
-  const [priority, setPriority] = useState<TaskPriority>("medium");
+  const [priority, setPriority] = useState<Priority>("medium");
   const [dateError, setDateError] = useState<string | null>(null);
 
   const today = new Date().toISOString().split("T")[0];
+
+ 
+  const isDirty =
+    title.trim() !== "" ||
+    description.trim() !== "" ||
+    dueDate !== "" ||
+    priority !== "medium";
 
   function handleDescriptionChange(e: ChangeEvent<HTMLTextAreaElement>) {
     const value = e.target.value;
     if (value.length <= 200) {
       setDescription(value);
     }
+  }
+
+  function handleResetForm() {
+    setTitle("");
+    setDescription("");
+    setDueDate("");
+    setPriority("medium");
+    setDateError(null);
+  }
+
+  function handleCancel() {
+    if (isDirty) {
+      const confirmDiscard = window.confirm("Discard changes?");
+      if (!confirmDiscard) {
+        return;
+      }
+    }
+
+    handleResetForm();
+    onCancel?.();
   }
 
   function handleSubmit(e: FormEvent<HTMLFormElement>) {
@@ -36,15 +64,12 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
     onAddTask({
       title: title.trim(),
       description: description.trim(),
-      dueDate: dueDate || undefined,
+      dueDate: dueDate ? dueDate : undefined,
       priority,
       status: "todo",
     });
 
-    setTitle("");
-    setDescription("");
-    setDueDate("");
-    setPriority("medium");
+    handleResetForm();
   }
 
   const descLength = description.length;
@@ -95,8 +120,8 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
           onChange={(e) => {
             setDueDate(e.target.value);
             if (dateError) setDateError(null);
-          }} />
-      
+          }}
+        />
         {dateError && (
           <p
             role="alert"
@@ -116,7 +141,7 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
         <select
           id="task-priority"
           value={priority}
-          onChange={(e) => setPriority(e.target.value as TaskPriority)}
+          onChange={(e) => setPriority(e.target.value as Priority)}
         >
           <option value="low">Low</option>
           <option value="medium">Medium</option>
@@ -124,9 +149,24 @@ export function TaskForm({ onAddTask }: TaskFormProps) {
         </select>
       </div>
 
-      <button type="submit" className="task-button">
-        Add Task
-      </button>
+      <div style={{ display: "flex", gap: "0.75rem", marginTop: "1rem" }}>
+        <button type="submit" className="task-button">
+          Add Task
+        </button>
+        <button
+          type="button"
+          onClick={handleCancel}
+          style={{
+            padding: "0.5rem 1rem",
+            backgroundColor: "#f3f4f6",
+            border: "1px solid #d1d5db",
+            borderRadius: "6px",
+            cursor: "pointer",
+          }}
+        >
+          Cancel
+        </button>
+      </div>
     </form>
   );
 }
