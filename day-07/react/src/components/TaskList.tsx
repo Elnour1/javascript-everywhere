@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { tasks as initialTasks } from "../data/tasks";
-import type { Task, TaskStatus, SortOption, StatusFilter } from "../types/task";
+import type { Task, SortOption, StatusFilter } from "../types/task";
 import { nextStatus } from "../types/task";
 import TaskCard from "./TaskCard";
 import TaskFilters from "./TaskFilters";
