@@ -1,18 +1,24 @@
 import { useState } from "react";
 import { tasks as initialTasks } from "../data/tasks";
 import type { Task, TaskStatus, SortOption } from "../types/task";
-import TaskCard from "../components/TaskCard";
+import TaskCard, { nextStatus } from "./TaskCard";
 import TaskFilters from "./TaskFilters";
 import Section from "./Section";
 import { Badge } from "./Badge";
+import { useDocumentTitle } from "../hooks/useDocumentTitle"; // 1. استيراد الـ Hook
 
 function TaskList() {
   const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [lastDeletedTask, setLastDeletedTask] = useState<Task | null>(null);
-   
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<TaskStatus | "all">("all");
   const [sortBy, setSortBy] = useState<SortOption>("default");
+
+  // حساب المهام المفتوحة (غير المكتملة)
+  const openCount = tasks.filter((t) => t.status !== "done").length;
+
+  // 2. استدعاء الـ Hook في سطر واحد فقط
+  useDocumentTitle(`Tasks (${openCount})`);
 
   const totalTasks = tasks.length;
   const completedTasks = tasks.filter((task) => task.status === "done").length;
@@ -21,32 +27,25 @@ function TaskList() {
   const filteredTasks = tasks.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      (task.description ?? "").toLowerCase().includes(searchQuery.toLowerCase());
-
+      task.description.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "all" || task.status === statusFilter;
-
     return matchesSearch && matchesStatus;
   });
 
-  // 2. فرز المهام المصفاة على نسخة من المصفوفة
   const displayedTasks = [...filteredTasks].sort((a, b) => {
-    if (sortBy === "title") {
-      return a.title.localeCompare(b.title);
-    }
-
+    if (sortBy === "title") return a.title.localeCompare(b.title);
     if (sortBy === "dueDate") {
       if (!a.dueDate && !b.dueDate) return 0;
       if (!a.dueDate) return 1;
       if (!b.dueDate) return -1;
       return a.dueDate.localeCompare(b.dueDate);
     }
-
     return 0;
   });
+
   const isFilterActive =
     searchQuery.trim() !== "" || statusFilter !== "all" || sortBy !== "default";
 
- 
   function handleClearFilters() {
     setSearchQuery("");
     setStatusFilter("all");
@@ -208,7 +207,6 @@ function TaskList() {
         </div>
       )}
 
-      {/* قائمة المهام */}
       <div className="task-list">
         {displayedTasks.map((task, index) => (
           <TaskCard
