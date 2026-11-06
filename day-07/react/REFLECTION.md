@@ -39,3 +39,13 @@ Type assertion (`as StatusFilter`) is safe when the input source is strictly con
 
 ### 3. Why do we turn an empty date into `undefined`?
 In HTML, an empty date input returns an empty string (`""`), which is truthy in JavaScript and creates ambiguity with optional TypeScript properties typed as `string | undefined`. Converting `""` to `undefined` represents the true absence of a value, prevents invalid date strings from entering business logic or APIs, and makes sorting easier by treating missing dates consistently.
+# Track 2 Reflection — Part 3
+
+### 1. What happens to an effect without a cleanup in StrictMode?
+In development mode, React StrictMode deliberately mounts, unmounts, and remounts components twice to expose hidden bugs and resource leaks. If an effect sets up subscriptions, intervals, or event listeners without returning a cleanup function, the original side effect remains active in memory. This leads to duplicated listeners, memory leaks, and unexpected duplicate actions running in the background.
+
+### 2. Why does `useState(readJson(...))` read storage on every render?
+JavaScript evaluates function arguments before passing them into `useState`, so `readJson(...)` executes synchronously on every single re-render of the component. While React only uses the returned value on the initial mount, the disk reading and JSON parsing still happen repeatedly on every cycle. Passing an initializer function instead (`useState(() => readJson(...))`) defers execution so storage is accessed only once during initial mount.
+
+### 3. When is `useMemo` not worth it?
+`useMemo` is not worth it for inexpensive, lightweight calculations such as simple filtering, basic math, or string manipulation on small arrays. Caching values introduces overhead because React must allocate memory for the memoized result and compare the dependency array on every render. If that caching overhead costs more time and memory than simply recalculating the expression, `useMemo` degrades performance instead of optimizing it.
