@@ -49,3 +49,24 @@ JavaScript evaluates function arguments before passing them into `useState`, so 
 
 ### 3. When is `useMemo` not worth it?
 `useMemo` is not worth it for inexpensive, lightweight calculations such as simple filtering, basic math, or string manipulation on small arrays. Caching values introduces overhead because React must allocate memory for the memoized result and compare the dependency array on every render. If that caching overhead costs more time and memory than simply recalculating the expression, `useMemo` degrades performance instead of optimizing it.
+# Project Architecture & Directory Structure
+
+This document outlines the organization and responsibilities of the directories located inside `src/`.
+
+### Folder Responsibilities:
+- **`src/components/`**: Reusable UI components and presentational building blocks (e.g., `Badge`, `TaskCard`, `Section`, `EmptyState`, `TaskFilters`, `TaskForm`).
+- **`src/pages/`**: Top-level route views and page containers; **this is where any new page (e.g., a new dashboard or settings view) must be placed**.
+- **`src/hooks/`**: Custom React hooks encapsulating reusable stateful and side-effect logic; **this is where any new custom hook (e.g., `useLocalStorage`, `useDocumentTitle`) must be placed**.
+- **`src/data/`**: Static datasets, initial mock collections, and seed configurations (e.g., `tasks.ts`, `projects.ts`).
+- **`src/types/`**: Shared TypeScript definitions, interfaces, and union types ensuring application-wide type safety (e.g., `task.ts`, `project.ts`).
+- **`src/utils/`**: Generic, pure helper functions and utility routines that operate independently of React components (e.g., `countBy.ts`).
+# Track 2 Reflection — Routing & Architecture
+
+### 1. Why can't `TaskList` call `useTasks()` directly on every page?
+If `TaskList` fetches all tasks globally via `useTasks()` on its own, it couples the presentational view to the entire global dataset. Different pages require different scopes (e.g., all tasks vs. tasks filtered strictly by `projectId`). Passing tasks down as props or scoping the hook to the active route parameter allows `TaskList` to remain a reusable, modular component across any view.
+
+### 2. What does the `end` prop on `NavLink` fix?
+By default, React Router's `NavLink` considers a link active if the current URL begins with the link's `to` path. For root or parent paths like `/projects`, every nested route (such as `/projects/design-system`) matches as a prefix, keeping the parent link permanently active. Adding the `end` prop enforces an exact match, ensuring the parent link is highlighted only when the URL ends exactly at that path.
+
+### 3. Why does `ProjectPage` give `TaskList` a `key`?
+When switching between projects (e.g., from `/projects/1` to `/projects/2`), React reuses the existing `TaskList` component instance by default instead of remounting it. Passing a dynamic key such as `key={projectId}` forces React to unmount the previous instance and mount a fresh one. This automatically resets internal component states (like filters, local selection, and undo queues) cleanly for the newly selected project.
