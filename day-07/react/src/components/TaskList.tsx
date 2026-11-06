@@ -1,37 +1,43 @@
 import { useState } from "react";
-import type { Task, TaskStatus, SortOption } from "../types/task";
+import { tasks as initialTasks } from "../data/tasks";
+import type { Task, TaskStatus, SortOption, StatusFilter } from "../types/task";
 import { nextStatus } from "../types/task";
 import TaskCard from "./TaskCard";
 import TaskFilters from "./TaskFilters";
 import Section from "./Section";
 import { Badge } from "./Badge";
-import { useDocumentTitle } from "../hooks/useDocumentTitle"; 
+import { useDocumentTitle } from "../hooks/useDocumentTitle";
+import { useLocalStorage } from "../hooks/useLocalStorage";
+import { countBy } from "../utils/countBy"; // 1. استيراد دالة countBy
 
 function TaskList() {
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(initialTasks);
   const [lastDeletedTask, setLastDeletedTask] = useState<Task | null>(null);
-  const [searchQuery, setSearchQuery] = useState<string>("");
-  const [statusFilter, setStatusFilter] = useState<TaskStatus | "all">("all");
+
+  const [searchQuery, setSearchQuery] = useLocalStorage<string>("task-search", "");
+  const [statusFilter, setStatusFilter] = useLocalStorage<StatusFilter>("task-status-filter", "all");
   const [sortBy, setSortBy] = useState<SortOption>("default");
 
-  // حساب المهام المفتوحة (غير المكتملة)
-  const openCount = tasks.filter((t) => t.status !== "done").length;
+  // 2. استخدام countBy لحساب عدد المهام لكل حالة
+  const statusCounts = countBy(tasks, (task) => task.status);
+  const todoCount = statusCounts["todo"] || 0;
+  const inProgressCount = statusCounts["in-progress"] || 0;
+  const doneCount = statusCounts["done"] || 0;
 
-  // 2. استدعاء الـ Hook في سطر واحد فقط
+  const openCount = tasks.filter((t) => t.status !== "done").length;
   useDocumentTitle(`Tasks (${openCount})`);
 
   const totalTasks = tasks.length;
-  const completedTasks = tasks.filter((task) => task.status === "done").length;
+  const completedTasks = doneCount;
   const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
- const filteredTasks = tasks.filter((task) => {
-  const matchesSearch =
-    task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-    Boolean(task.description?.toLowerCase().includes(searchQuery.toLowerCase()));
-
-  const matchesStatus = statusFilter === "all" || task.status === statusFilter;
-  return matchesSearch && matchesStatus;
-});
+  const filteredTasks = tasks.filter((task) => {
+    const matchesSearch =
+      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+      Boolean(task.description?.toLowerCase().includes(searchQuery.toLowerCase()));
+    const matchesStatus = statusFilter === "all" || task.status === statusFilter;
+    return matchesSearch && matchesStatus;
+  });
 
   const displayedTasks = [...filteredTasks].sort((a, b) => {
     if (sortBy === "title") return a.title.localeCompare(b.title);
@@ -91,11 +97,17 @@ function TaskList() {
       title="My Tasks"
       action={<Badge tone="neutral">{totalTasks}</Badge>}
     >
-      <p className="task-progress" style={{ margin: "0 0 1rem 0", color: "#666" }}>
-        {totalTasks === 0
-          ? "0 tasks (0%)"
-          : `${completedTasks} of ${totalTasks} done (${percentage}%)`}
-      </p>
+      {/* سطر التقدم + تفصيل الحالات عبر countBy تحت العنوان مباشرة */}
+      <div style={{ margin: "0 0 1rem 0" }}>
+        <p className="task-progress" style={{ margin: "0 0 0.25rem 0", color: "#666" }}>
+          {totalTasks === 0
+            ? "0 tasks (0%)"
+            : `${completedTasks} of ${totalTasks} done (${percentage}%)`}
+        </p>
+        <p style={{ margin: 0, fontSize: "0.85rem", color: "#6b7280" }}>
+          To Do: <strong>{todoCount}</strong> · In Progress: <strong>{inProgressCount}</strong> · Done: <strong>{doneCount}</strong>
+        </p>
+      </div>
 
       <div
         className="filter-bar"
@@ -122,7 +134,7 @@ function TaskList() {
 
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as TaskStatus | "all")}
+          onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
           style={{
             padding: "0.4rem 0.6rem",
             borderRadius: "6px",
