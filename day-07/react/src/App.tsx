@@ -1,35 +1,27 @@
-import React from 'react';
-import TaskStats from './components/TaskStats';
-import TaskList from './components/TaskList';
-import Footer from './components/Footer';
-import Sidebar from './components/Sidebar';
-import './App.css';
+import { useEffect, useState, type ComponentType } from "react";
+import TaskList from "./components/TaskList";
+import TaskDetails from "./pages/TaskDetails";
 
-const App: React.FC = () => {
-  return (
-    <div className="app-container">
-      <div className="app-layout">
-        <Sidebar
-            title="Projects"
-            projects={[
-              'Website Redesign',
-              'Mobile App',
-              'Marketing',
-              'Design System'
-            ]}
-          />
-        <main className="main-content">
-          <header className="main-header">
-            <h1>TaskFlow</h1>
-            <TaskStats />
-          </header>
-          <TaskList />
-        </main>
-      </div>
+export function App() {
+  const [pathname, setPathname] = useState(window.location.pathname);
 
-      <Footer />
-    </div>
-  );
-};
+  useEffect(() => {
+    const updatePathname = () => setPathname(window.location.pathname);
+    window.addEventListener("popstate", updatePathname);
+    return () => window.removeEventListener("popstate", updatePathname);
+  }, []);
+
+  const taskRoute = pathname.match(/^\/projects\/([^/]+)\/tasks\/([^/]+)\/?$/);
+  if (taskRoute) {
+    const Details = TaskDetails as ComponentType<{ projectId: string; taskId: string }>;
+    return <Details projectId={decodeURIComponent(taskRoute[1])} taskId={decodeURIComponent(taskRoute[2])} />;
+  }
+
+  if (pathname === "/" || /^\/projects\/[^/]+\/?$/.test(pathname)) {
+    return <TaskList />;
+  }
+
+  return null;
+}
 
 export default App;

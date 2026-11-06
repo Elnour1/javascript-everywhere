@@ -1,37 +1,12 @@
-import type { MouseEvent } from "react";
-import type { Task, TaskStatus } from "../types/task";
+import type { Task } from "../types/task";
 import { Badge } from "./Badge";
 
 interface TaskCardProps {
   task: Task;
   variant?: "default" | "urgent";
-  onSelect: (id: number) => void;
-  onDelete: (id: number) => void;
-  onToggleStatus: (id: number) => void;
-}
-
-// تأكدي من وجود export قبل function
- function nextStatus(status: TaskStatus): TaskStatus {
-  switch (status) {
-    case "todo":
-      return "in-progress";
-    case "in-progress":
-      return "done";
-    case "done":
-      return "todo";
-  }
-}
-
-function getNextActionText(status: TaskStatus): string {
-  if (status === "todo") return "Start";
-  if (status === "in-progress") return "Mark Done";
-  return "Restart";
-}
-
-function getStatusLabel(status: TaskStatus): string {
-  if (status === "todo") return "To Do";
-  if (status === "in-progress") return "In Progress";
-  return "Done";
+  onSelect?: (id: number) => void;
+  onDelete?: (id: number) => void;
+  onToggleStatus?: (id: number) => void;
 }
 
 export function TaskCard({
@@ -41,62 +16,75 @@ export function TaskCard({
   onDelete,
   onToggleStatus,
 }: TaskCardProps) {
-  function handleDetailsClick(event: MouseEvent<HTMLButtonElement>) {
-    console.log("button clicked", event.currentTarget.textContent);
-    onSelect(task.id);
-  }
-
-  function handleDelete(event: MouseEvent<HTMLButtonElement>) {
-    event.stopPropagation();
-    onDelete(task.id);
-  }
-
-  function handleStatusClick(event: MouseEvent<HTMLButtonElement>) {
-    event.stopPropagation();
-    onToggleStatus(task.id);
-  }
-
-  const priority = task.priority ?? "medium";
-  const nextTaskStatus = nextStatus(task.status);
-
-  const toneMap: Record<"low" | "medium" | "high", "neutral" | "warning" | "danger"> = {
-    low: "neutral",
-    medium: "warning",
-    high: "danger",
-  };
-
-  const badgeTone = toneMap[priority];
+  const projectId = window.location.pathname.match(/^\/projects\/([^/]+)/)?.[1] ?? "1";
 
   return (
-    <article className={`task-card task-card-${variant}`}>
-      <div className="task-header">
-        <h3 className="task-title">{task.title}</h3>
-        <Badge tone={badgeTone}>{priority}</Badge>
-      </div>
-
-      <p className="task-description">{task.description}</p>
-      <p className="task-date">{task.dueDate ?? "No Due Date"}</p>
-
-      <span className={`task-status status-${task.status}`}>
-        {getStatusLabel(task.status)}
-      </span>
-
-      <div className="task-actions">
-        <button className="task-button" onClick={handleDetailsClick}>
-          Details
-        </button>
-        <button
-          className="task-button"
-          onClick={handleStatusClick}
-          aria-label={`Set task status to ${getStatusLabel(nextTaskStatus)}`}
+    <div
+      className={`task-card ${variant === "urgent" ? "task-card--urgent" : ""}`}
+      style={{
+        border: "1px solid #e5e7eb",
+        borderRadius: "6px",
+        padding: "1rem",
+        marginBottom: "0.75rem",
+        backgroundColor: "#fff",
+      }}
+    >
+      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+        <h4
+          onClick={() => onSelect?.(task.id)}
+          style={{ margin: 0, cursor: "pointer", fontSize: "1.05rem" }}
         >
-          {getNextActionText(task.status)}
-        </button>
-        <button className="task-button task-button--danger" onClick={handleDelete}>
-          Delete
-        </button>
+          {task.title}
+        </h4>
+        <div style={{ display: "flex", gap: "0.5rem", alignItems: "center" }}>
+          <a
+            href={`/projects/${projectId}/tasks/${task.id}`}
+            style={{
+              padding: "0.25rem 0.5rem",
+              fontSize: "0.8rem",
+              borderRadius: "4px",
+              border: "1px solid #d1d5db",
+              backgroundColor: "#f9fafb",
+              cursor: "pointer",
+              color: "inherit",
+              textDecoration: "none",
+            }}
+          >
+            Details
+          </a>
+          {onDelete && (
+            <button
+              type="button"
+              onClick={() => onDelete(task.id)}
+              style={{ cursor: "pointer" }}
+            >
+              Delete
+            </button>
+          )}
+          <button
+            type="button"
+            onClick={() => onToggleStatus?.(task.id)}
+            style={{ cursor: "pointer", border: "none", background: "none" }}
+          >
+            <Badge tone={task.status === "done" ? "neutral" : "warning"}>
+              {task.status}
+            </Badge>
+          </button>
+        </div>
       </div>
-    </article>
+
+      {task.description && (
+        <p style={{ margin: "0.5rem 0", color: "#6b7280", fontSize: "0.9rem" }}>
+          {task.description}
+        </p>
+      )}
+
+      {task.dueDate && (
+        <small style={{ color: "#9ca3af", display: "block", marginTop: "0.5rem" }}>
+          Due: {task.dueDate}
+        </small>
+      )}
+    </div>
   );
 }
 
