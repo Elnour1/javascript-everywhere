@@ -1,14 +1,14 @@
 import { useState } from "react";
-import { tasks as initialTasks } from "../data/tasks";
 import type { Task, TaskStatus, SortOption } from "../types/task";
-import TaskCard, { nextStatus } from "./TaskCard";
+import { nextStatus } from "../types/task";
+import TaskCard from "./TaskCard";
 import TaskFilters from "./TaskFilters";
 import Section from "./Section";
 import { Badge } from "./Badge";
-import { useDocumentTitle } from "../hooks/useDocumentTitle"; // 1. استيراد الـ Hook
+import { useDocumentTitle } from "../hooks/useDocumentTitle"; 
 
 function TaskList() {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
+  const [tasks, setTasks] = useState<Task[]>([]);
   const [lastDeletedTask, setLastDeletedTask] = useState<Task | null>(null);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [statusFilter, setStatusFilter] = useState<TaskStatus | "all">("all");
@@ -24,13 +24,14 @@ function TaskList() {
   const completedTasks = tasks.filter((task) => task.status === "done").length;
   const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
 
-  const filteredTasks = tasks.filter((task) => {
-    const matchesSearch =
-      task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      task.description.toLowerCase().includes(searchQuery.toLowerCase());
-    const matchesStatus = statusFilter === "all" || task.status === statusFilter;
-    return matchesSearch && matchesStatus;
-  });
+ const filteredTasks = tasks.filter((task) => {
+  const matchesSearch =
+    task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+    Boolean(task.description?.toLowerCase().includes(searchQuery.toLowerCase()));
+
+  const matchesStatus = statusFilter === "all" || task.status === statusFilter;
+  return matchesSearch && matchesStatus;
+});
 
   const displayedTasks = [...filteredTasks].sort((a, b) => {
     if (sortBy === "title") return a.title.localeCompare(b.title);

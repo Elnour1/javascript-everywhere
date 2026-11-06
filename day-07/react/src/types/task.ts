@@ -32,3 +32,5 @@ export function getNextStatusActionLabel(status: TaskStatus): string {
   }
 }
 export type SortOption = "default" | "title" | "dueDate";
+
+export type StatusFilter = TaskStatus | "all";

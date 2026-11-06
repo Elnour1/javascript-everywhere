@@ -10,7 +10,8 @@ interface TaskCardProps {
   onToggleStatus: (id: number) => void;
 }
 
-function nextStatus(status: TaskStatus): TaskStatus {
+// تأكدي من وجود export قبل function
+ function nextStatus(status: TaskStatus): TaskStatus {
   switch (status) {
     case "todo":
       return "in-progress";
