@@ -51,3 +51,19 @@ A modular, strictly-typed Task Manager interface built with React, Vite, and Typ
 npm install
 npm run build
 npm run dev
+# Task Manager — Module 05
+
+A modular, type-safe React & TypeScript Task Management application built for the **JavaScript Everywhere** course.
+
+## Features Implemented in Module 05
+- **Dynamic Document Title (`useDocumentTitle`):** Updates browser tab with active open task count.
+- **Persistent Filters (`useLocalStorage`):** Saves search query and status filter to `localStorage` across page reloads.
+- **Generic Counter Helper (`countBy`):** Dynamically computes and displays status breakdown (To Do, In Progress, Done) directly under the title.
+- **Debounced Search (`useDebouncedValue` - Optional Challenge):** Optimized filtering by delaying search input evaluation by 300ms with cleanup.
+- **Full Type Safety:** Written strictly in TypeScript without any `any`.
+
+## Getting Started
+```bash
+npm install
+npm run dev
+npm run build
