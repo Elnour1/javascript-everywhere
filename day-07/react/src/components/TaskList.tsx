@@ -1,114 +1,94 @@
-import { useState } from "react";
-import { tasks as initialTasks } from "../data/tasks";
-import type { Task, SortOption, StatusFilter } from "../types/task";
-import { nextStatus } from "../types/task";
+import { useEffect, useState } from "react";
+import type { Task, StatusFilter } from "../types/task";
 import TaskCard from "./TaskCard";
-import TaskFilters from "./TaskFilters";
 import Section from "./Section";
 import { Badge } from "./Badge";
-import { useDocumentTitle } from "../hooks/useDocumentTitle";
-import { useLocalStorage } from "../hooks/useLocalStorage";
-import { countBy } from "../utils/countBy"; // 1. استيراد دالة countBy
 
-function TaskList() {
-  const [tasks, setTasks] = useState<Task[]>(initialTasks);
-  const [lastDeletedTask, setLastDeletedTask] = useState<Task | null>(null);
+interface TaskListProps {
+  tasks: Task[];
+  title?: string;
+}
 
-  const [searchQuery, setSearchQuery] = useLocalStorage<string>("task-search", "");
-  const [statusFilter, setStatusFilter] = useLocalStorage<StatusFilter>("task-status-filter", "all");
-  const [sortBy, setSortBy] = useState<SortOption>("default");
+export function TaskList({ tasks: initialTasks, title = "My Tasks" }: TaskListProps) {
+  const [searchParams, setUrlSearchParams] = useState(
+    () => new URLSearchParams(typeof window === "undefined" ? "" : window.location.search),
+  );
 
-  // 2. استخدام countBy لحساب عدد المهام لكل حالة
-  const statusCounts = countBy(tasks, (task) => task.status);
-  const todoCount = statusCounts["todo"] || 0;
-  const inProgressCount = statusCounts["in-progress"] || 0;
-  const doneCount = statusCounts["done"] || 0;
+  useEffect(() => {
+    function syncSearchParams() {
+      setUrlSearchParams(new URLSearchParams(window.location.search));
+    }
 
-  const openCount = tasks.filter((t) => t.status !== "done").length;
-  useDocumentTitle(`Tasks (${openCount})`);
+    window.addEventListener("popstate", syncSearchParams);
+    return () => window.removeEventListener("popstate", syncSearchParams);
+  }, []);
 
-  const totalTasks = tasks.length;
-  const completedTasks = doneCount;
-  const percentage = totalTasks > 0 ? Math.round((completedTasks / totalTasks) * 100) : 0;
+  function setSearchParams(updater: (prev: URLSearchParams) => URLSearchParams) {
+    const next = updater(new URLSearchParams(window.location.search));
+    const query = next.toString();
+    const url = `${window.location.pathname}${query ? `?${query}` : ""}${window.location.hash}`;
+    window.history.pushState(null, "", url);
+    setUrlSearchParams(next);
+  }
 
-  const filteredTasks = tasks.filter((task) => {
+  // 1. استخراج القيم من الـ URL كـ Single Source of Truth
+  const searchQuery = searchParams.get("search") ?? "";
+  const statusParam = searchParams.get("status");
+  const statusFilter: StatusFilter =
+    statusParam === "todo" || statusParam === "in-progress" || statusParam === "done"
+      ? statusParam
+      : "all";
+
+  // دالة مساعدة لتحديث معاملات الرابط مع حذف القيم الافتراضية/الفارغة لإبقاء الرابط نظيفاً
+  function updateFilters(updates: { search?: string; status?: StatusFilter }) {
+    setSearchParams((prev: URLSearchParams) => {
+      const next = new URLSearchParams(prev);
+
+      if (updates.search !== undefined) {
+        if (updates.search.trim()) {
+          next.set("search", updates.search);
+        } else {
+          next.delete("search");
+        }
+      }
+
+      if (updates.status !== undefined) {
+        if (updates.status !== "all") {
+          next.set("status", updates.status);
+        } else {
+          next.delete("status");
+        }
+      }
+
+      return next;
+    });
+  }
+
+  // 2. تطبيق الفلترة بالاعتماد على القيم المشتقة من الـ URL
+  const filteredTasks = initialTasks.filter((task) => {
     const matchesSearch =
       task.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       Boolean(task.description?.toLowerCase().includes(searchQuery.toLowerCase()));
+
     const matchesStatus = statusFilter === "all" || task.status === statusFilter;
+
     return matchesSearch && matchesStatus;
   });
 
-  const displayedTasks = [...filteredTasks].sort((a, b) => {
-    if (sortBy === "title") return a.title.localeCompare(b.title);
-    if (sortBy === "dueDate") {
-      if (!a.dueDate && !b.dueDate) return 0;
-      if (!a.dueDate) return 1;
-      if (!b.dueDate) return -1;
-      return a.dueDate.localeCompare(b.dueDate);
-    }
-    return 0;
-  });
-
-  const isFilterActive =
-    searchQuery.trim() !== "" || statusFilter !== "all" || sortBy !== "default";
+  const isFilterActive = searchQuery !== "" || statusFilter !== "all";
 
   function handleClearFilters() {
-    setSearchQuery("");
-    setStatusFilter("all");
-    setSortBy("default");
-  }
-
-  function handleSelectTask(id: number) {
-    console.log(`Task selected with id: ${id}`);
-  }
-
-  function handleDeleteTask(id: number) {
-    const taskToDelete = tasks.find((t) => t.id === id);
-    if (taskToDelete) {
-      setLastDeletedTask(taskToDelete);
-      setTasks((prevTasks) => prevTasks.filter((task) => task.id !== id));
-    }
-  }
-
-  function handleUndo() {
-    if (lastDeletedTask) {
-      setTasks((prevTasks) => [...prevTasks, lastDeletedTask]);
-      setLastDeletedTask(null);
-    }
-  }
-
-  function handleToggleStatus(taskId: number) {
-    setTasks((prevTasks) =>
-      prevTasks.map((task) => {
-        if (task.id === taskId) {
-          return {
-            ...task,
-            status: nextStatus(task.status),
-          };
-        }
-        return task;
-      })
-    );
+    setSearchParams((prev: URLSearchParams) => {
+      const next = new URLSearchParams(prev);
+      next.delete("search");
+      next.delete("status");
+      return next;
+    });
   }
 
   return (
-    <Section
-      title="My Tasks"
-      action={<Badge tone="neutral">{totalTasks}</Badge>}
-    >
-      {/* سطر التقدم + تفصيل الحالات عبر countBy تحت العنوان مباشرة */}
-      <div style={{ margin: "0 0 1rem 0" }}>
-        <p className="task-progress" style={{ margin: "0 0 0.25rem 0", color: "#666" }}>
-          {totalTasks === 0
-            ? "0 tasks (0%)"
-            : `${completedTasks} of ${totalTasks} done (${percentage}%)`}
-        </p>
-        <p style={{ margin: 0, fontSize: "0.85rem", color: "#6b7280" }}>
-          To Do: <strong>{todoCount}</strong> · In Progress: <strong>{inProgressCount}</strong> · Done: <strong>{doneCount}</strong>
-        </p>
-      </div>
-
+    <Section title={title} action={<Badge tone="neutral">{initialTasks.length}</Badge>}>
+      {/* شريط الفلاتر متصل مباشرة بـ URL Search Params */}
       <div
         className="filter-bar"
         style={{
@@ -123,7 +103,7 @@ function TaskList() {
           type="text"
           placeholder="Search tasks..."
           value={searchQuery}
-          onChange={(e) => setSearchQuery(e.target.value)}
+          onChange={(e) => updateFilters({ search: e.target.value })}
           style={{
             padding: "0.4rem 0.6rem",
             borderRadius: "6px",
@@ -134,7 +114,7 @@ function TaskList() {
 
         <select
           value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value as StatusFilter)}
+          onChange={(e) => updateFilters({ status: e.target.value as StatusFilter })}
           style={{
             padding: "0.4rem 0.6rem",
             borderRadius: "6px",
@@ -148,12 +128,9 @@ function TaskList() {
           <option value="in-progress">In Progress</option>
           <option value="done">Done</option>
         </select>
-
-        <TaskFilters sortBy={sortBy} onSortChange={setSortBy} />
       </div>
 
       <div
-        className="results-summary"
         style={{
           display: "flex",
           alignItems: "center",
@@ -164,7 +141,7 @@ function TaskList() {
         }}
       >
         <span>
-          Showing {displayedTasks.length} of {totalTasks}
+          Showing {filteredTasks.length} of {initialTasks.length}
         </span>
 
         {isFilterActive && (
@@ -186,50 +163,9 @@ function TaskList() {
         )}
       </div>
 
-      {lastDeletedTask && (
-        <div
-          className="undo-banner"
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "0.5rem",
-            padding: "0.75rem 1rem",
-            marginBottom: "1rem",
-            backgroundColor: "#f3f4f6",
-            borderRadius: "6px",
-            fontSize: "0.9rem",
-          }}
-        >
-          <span>Task deleted</span>
-          <span>·</span>
-          <button
-            type="button"
-            onClick={handleUndo}
-            style={{
-              background: "none",
-              border: "none",
-              color: "#2563eb",
-              fontWeight: 600,
-              cursor: "pointer",
-              padding: 0,
-              textDecoration: "underline",
-            }}
-          >
-            Undo
-          </button>
-        </div>
-      )}
-
       <div className="task-list">
-        {displayedTasks.map((task, index) => (
-          <TaskCard
-            key={task.id}
-            task={task}
-            variant={index === 0 ? "urgent" : "default"}
-            onSelect={handleSelectTask}
-            onDelete={handleDeleteTask}
-            onToggleStatus={handleToggleStatus}
-          />
+        {filteredTasks.map((task) => (
+          <TaskCard key={task.id} task={task} />
         ))}
       </div>
     </Section>
